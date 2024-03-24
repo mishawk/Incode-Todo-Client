@@ -92,6 +92,7 @@ const KanbanBoard = () => {
       setIsFetchSuccessful(true);
     } catch (error) {
       console.error('Error:', error);
+      setIsFetchSuccessful(false);
       setErrors(error.message);
     }
   };

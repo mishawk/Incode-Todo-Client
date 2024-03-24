@@ -58,6 +58,7 @@ export function TodoTablePage() {
       setIsFetchSuccessful(true);
     } catch (error) {
       console.error('Error:', error);
+      setIsFetchSuccessful(false);
     }
   };
 

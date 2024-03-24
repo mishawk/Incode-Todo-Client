@@ -11,7 +11,7 @@ interface ColumnActionProps {
   todosFromServer: Todo[];
   rowModesModel: GridRowModesModel;
   handleEditClick: (id: string) => void;
-  handleDeleteClick: (todoName: string) => void;
+  handleDeleteClick: (boardId: string, title: string) => void;
   handleSaveClick: (id: string) => void;
   handleCancelClick: (id: string) => void;
 }
@@ -22,17 +22,17 @@ export const getColumns = (
   handleSaveClick: (id: GridRowId) => () => void, 
   handleCancelClick: (id: GridRowId) => () => void, 
   handleEditClick: (id: GridRowId) => () => void, 
-  handleDeleteClick: (todoName: string) => () => Promise<void>
+  handleDeleteClick: (id: number) => () => Promise<void>
     ) => {
   const columns: GridColDef[] = [
     { field: 'id', headerName: 'ID', width: 180, editable: false },
-    { field: 'name', headerName: 'Name', width: 180, editable: true },
+    { field: 'title', headerName: 'Title', width: 180, editable: true },
     {
       field: 'description',
       headerName: 'Description',
       type: 'string',
       width: 180,
-      editable: false,
+      editable: true,
     },
     {
       field: 'status',
@@ -51,7 +51,7 @@ export const getColumns = (
       getActions: ({ id }) => {
         const todo = todosFromServer.find(todo => todo.id === id);
         const isInEditMode = rowModesModel[id]?.mode === GridRowModes.Edit;
-        const todoName = todo!.name;
+        const todoTitle = todo!.title;
 
         if (isInEditMode) {
           return [
@@ -62,7 +62,7 @@ export const getColumns = (
     
         return [
           <EditAction id={id} handleEditClick={handleEditClick} />,
-          <DeleteAction todoName={todoName} handleDeleteClick={handleDeleteClick} />,
+          <DeleteAction id={todo!.id} handleDeleteClick={handleDeleteClick} />,
         ];
       },
     },

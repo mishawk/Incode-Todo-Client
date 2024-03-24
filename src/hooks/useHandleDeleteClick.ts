@@ -4,18 +4,18 @@ import { Todo } from '../types/Todo';
 export const useHandleDeleteClick = (
   todosFromServer: Todo[],
   setTodosFromServer: React.Dispatch<React.SetStateAction<Todo[]>>,
-  deleteTodo: (todoName: string) => Promise<void>
+  deleteTodo: (id: number) => Promise<void>
   ) => {
-  return useCallback((todoName: string) => async () => {
+  return useCallback((id: number) => async () => {
     try {
-      const todoToDelete = todosFromServer.find(todo => todo.name === todoName);
+      const todoToDelete = todosFromServer.find(todo => todo.id === id);
   
       if (!todoToDelete) {
-        console.error('Todo not found:', todoName);
+        console.error('Todo not found:', id);
         return;
       }
   
-      await deleteTodo(todoToDelete.name);
+      await deleteTodo(todoToDelete.id);
   
       setTodosFromServer((prevTodos) => prevTodos.filter(todo => todo.id !== todoToDelete.id));
     } catch (error) {

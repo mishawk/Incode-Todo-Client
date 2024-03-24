@@ -1,18 +1,21 @@
 import { TodoStatus } from './TodoStatus';
 
 export interface Todo {
-  id: string;
-  name: string;
+  id: number;
+  title: string;
   description: string;
   status: TodoStatus;
+  boardId: string;
 }
 
 export interface CreateTodo {
-  name: string;
+  boardId: string;
+  title: string;
   description: string;
 }
 
 export interface UpdateTodo {
-  name: string;
-  status: TodoStatus;
+  title?: string;
+  status?: TodoStatus;
+  description?: string;
 }

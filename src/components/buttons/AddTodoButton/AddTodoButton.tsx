@@ -1,45 +1,46 @@
-import { Box, Button, Modal, TextField, Typography } from "@mui/material";
-import { GridRowModes, GridToolbarContainer } from "@mui/x-data-grid";
-import React, { useState } from "react";
-import { CreateTodo, Todo } from "../../types/Todo";
+import React, { useState } from 'react';
+import { Paper, IconButton, Modal, Box, Typography, TextField, Button } from '@mui/material';
+import { CreateTodo, Todo } from '../../../types/Todo';
 import AddIcon from '@mui/icons-material/Add';
 
-interface AddTodoProps {
+interface AddTodoButtonProps {
   createTodo: (boardId: string, newTodo: CreateTodo) => Promise<Todo>;
   boardId: string;
 }
 
-export function AddTodo(props: AddTodoProps) {
+const AddTodoButton = (props: AddTodoButtonProps) => {
   const { createTodo, boardId } = props;
-  const [open, setOpen] = useState(false);
+  const [hovered, setHovered] = useState(false);
+  const [openModal, setOpenModal] = useState(false);
   const [newTodo, setNewTodo] = useState<CreateTodo>({ boardId, title: '', description: '' });
-
-  const handleOpen = () => {
-    setOpen(true);
+  const handleOpenModal = () => {
+    setOpenModal(true);
   };
 
-  const handleClose = () => {
-    setOpen(false);
+  const handleCloseModal = () => {
+    setOpenModal(false);
   };
 
-  const handletitleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setNewTodo({
-      ...newTodo,
-      title: event.target.value,
-    });
+  const handleTitleChange = (e) => {
+    setNewTodo({ ...newTodo, title: e.target.value });
   };
 
-  const handleDescriptionChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setNewTodo({
-      ...newTodo,
-      description: event.target.value,
-    });
+  const handleDescriptionChange = (e) => {
+    setNewTodo({ ...newTodo, description: e.target.value });
+  };
+
+  const handleMouseEnter = () => {
+    setHovered(true);
+  };
+
+  const handleMouseLeave = () => {
+    setHovered(false);
   };
 
   const handleCreateTodo = async () => {
     try {
       await createTodo(boardId, newTodo);
-      handleClose();
+      handleCloseModal();
       setNewTodo({boardId, title: '', description: '' });
     } catch (error) {
       console.error('Error creating todo:', error);
@@ -47,14 +48,22 @@ export function AddTodo(props: AddTodoProps) {
   };
 
   return (
-    <GridToolbarContainer>
-      <Button color="primary" startIcon={<AddIcon />} onClick={handleOpen}>
-        Add Todo
-      </Button>
+    <>
+      <Paper
+        elevation={hovered ? 6 : 3}
+        style={{ textAlign: 'center', marginTop: '16px', padding: 16 }}
+        onMouseEnter={handleMouseEnter}
+        onMouseLeave={handleMouseLeave}
+        onClick={handleOpenModal}
+      >
+        <IconButton aria-label="add">
+          <AddIcon fontSize="large" />
+        </IconButton>
+      </Paper>
 
       <Modal
-        open={open}
-        onClose={handleClose}
+        open={openModal}
+        onClose={handleCloseModal}
         aria-labelledby="modal-title"
         aria-describedby="modal-description"
       >
@@ -71,17 +80,16 @@ export function AddTodo(props: AddTodoProps) {
             borderRadius: 2,
           }}
         >
-
           <Typography id="modal-title" variant="h6" component="h2">
             Add New Todo
           </Typography>
 
           <TextField
-            label="title"
+            label="Title"
             variant="outlined"
             fullWidth
             value={newTodo.title}
-            onChange={handletitleChange}
+            onChange={handleTitleChange}
             margin="normal"
           />
 
@@ -99,6 +107,8 @@ export function AddTodo(props: AddTodoProps) {
           </Button>
         </Box>
       </Modal>
-    </GridToolbarContainer>
+    </>
   );
-}
+};
+
+export default AddTodoButton;
